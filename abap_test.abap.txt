@@ -1,0 +1,155 @@
+
+REPORT ZPHIL_TEST2.
+
+
+"DEVELOPER NAME: (please put your name here)
+
+"INSTRUCTIONS:
+
+"Provide the correct implementation to the "abap_test" class
+"defined below.  The class defines two methods: reverse_number,
+"and next_highest_number.  The descriptions of what each method
+"should do is provided in the comments of the respective method.
+"some examples of the expected behavior are provided in the
+"implementation of the unit_test class.
+
+"Please don't forget to put your name in the DEVELOPER NAME comment above.
+
+"Please note that the provided unit_test class and start-of-selection
+"subroutine have been provided for your convenience.
+
+"you may:
+"  add anything you want to the private and/or protected sections
+"  of the "abap_test" class definition.
+
+"you may NOT:
+"  - define anything outside of the protected or private sections
+"    of the "abap_test" class.  So no subroutiens and no global variables.
+"  - change anything inside the public section of the "abap_test" class
+"  - call any function modules, subroutines, or classes ouside of this program.
+"    (abap "predefined" functions such as sin, cos, boolx, escape, and ceil are ok).
+"  - use the message command.
+"  - interact with any database tables or files.  Internal tables are ok.
+
+
+
+
+class abap_test definition final.
+  public section.
+    class-methods reverse_number
+      importing input type i
+      exporting output type i.
+    class-methods next_highest_number
+      importing input type i
+      exporting output type i.
+  protected section.
+  private section.
+endclass.
+
+
+class abap_test implementation.
+  method reverse_number.
+    "this method will take the reverse the order of the digits in the number and
+    "return that as a result, removing any leading zeros which would occur after
+    "performing the reversal.
+    "for instance calling reverse_number on 3210 should result in 123.
+    "calling reverse_number on 321 should also result in 123
+    "calling revese_number on 5243 should result in 3425.
+  endmethod.
+
+  method next_highest_number.
+    "this method rearanges the order of the digits of the input to return the smallest
+    "number that is greater than the input.  If there is no way to rearange the digits
+    "to produce a larger number than the input, then this function should return the input.
+    "for example:
+    "calling next_highest_number on 123 will result in 132
+    "calling next_highest_number on 1232 will result in 1322
+    "calling next_highest_number on 70 will result in 70
+  endmethod.
+endclass.
+
+
+
+class unit_tests definition for testing duration short risk level harmless FINAL.
+  private section.
+    methods all_reverse_number_tests for testing.
+    methods all_next_highest_number_tests for testing.
+
+    class-methods reverse_test
+      importing input type i expected_result type i.
+    class-methods next_highest_number_test
+      importing input type i expected_result type i.
+endclass.
+
+
+class unit_tests implementation.
+  method next_highest_number_test.
+    data actual_result type i.
+    call method abap_test=>next_highest_number
+      exporting input = input
+      importing output = actual_result.
+
+    cl_abap_unit_assert=>assert_Equals(
+      act = actual_result
+      exp = expected_result
+    ).
+  endmethod.
+
+  method reverse_test.
+    data actual_result type i.
+    call method abap_test=>reverse_number
+      exporting input = input
+      importing output = actual_result.
+
+    cl_abap_unit_assert=>assert_Equals(
+      act = actual_result
+      exp = expected_result
+    ).
+  endmethod.
+
+  method all_reverse_number_tests.
+    call method reverse_test exporting input = 3210 expected_result = 123.
+    call method reverse_test exporting input = 321 expected_result = 123.
+    call method reverse_test exporting input = 5243 expected_result = 3425.
+  endmethod.
+
+  method all_next_highest_number_tests.
+    call method next_highest_number_test exporting input = 123 expected_result = 132.
+    call method next_highest_number_test exporting input = 1232 expected_result = 1322.
+    call method next_highest_number_test exporting input = 70 expected_result = 70.
+  endmethod.
+endclass.
+
+
+
+parameters input type i.
+
+
+form start_of_selection.
+  data reverse_result type i.
+  data next_highest_result type i.
+  call method abap_test=>reverse_number
+    exporting input = input
+    importing output = reverse_result.
+  call method abap_test=>next_highest_number
+    exporting input = input
+    importing output = next_highest_result.
+  data reverse_result_cast type string.
+  reverse_result_cast = reverse_result.
+  data next_highest_result_cast type string.
+  next_highest_result_cast = next_highest_result.
+  data input_cast type string.
+  input_cast = input.
+  data v_message type string.
+  CONCATENATE
+    'reverse(' input_cast ') =' reverse_result_cast
+    into v_message.
+  message v_message type 'I'.
+  CONCATENATE
+    'next_highest_number(' input_cast ') = ' next_highest_result_cast
+    into v_message.
+  message v_message type 'I'.
+endform.
+
+start-of-selection.
+  perform start_of_selection.
